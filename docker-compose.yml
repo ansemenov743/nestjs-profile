@@ -1,0 +1,35 @@
+version: "3.8"
+services:
+    api:
+        build:
+            dockerfile: Dockerfile
+            context: .
+        depends_on: 
+            - postgres
+        environment: 
+            DATABASE_URL: postgres://user:password@postgres:5432/db
+            NODE_ENV: development
+            JWT_SECRET: very_big_secret_for_jwt
+            PORT: 3000
+        ports:
+            - "8080:3000"
+
+    postgres:
+        image: postgres
+        environment: 
+            POSTGRES_USER: user
+            POSTGRES_PASSWORD: password
+            POSTGRES_DB: db
+        ports:
+            - "35000:5432"
+
+    ### Postgres Adminer ###
+    postgres_admin:
+        image: dpage/pgadmin4:4.28
+        depends_on:
+            - postgres
+        environment: 
+            PGADMIN_DEFAULT_EMAIL: admin@admin.com
+            PGADMIN_DEFAULT_PASSWORD: password
+        ports:
+            - "5050:80"
